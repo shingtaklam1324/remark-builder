@@ -1,6 +1,4 @@
-s = open("index.md", "r").read()
-r = open("index.html", "w+").write(
-    """
+s = """
 <!DOCTYPE html>
 <html>
   <head>
@@ -27,10 +25,8 @@ r = open("index.html", "w+").write(
   <body>
     <textarea id="source">
 """
-    +
-    s
-    +
-    """
+
+t = """
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js">
     </script>
@@ -39,4 +35,18 @@ r = open("index.html", "w+").write(
     </script>
   </body>
 </html>
-""")
+"""
+
+import os
+import time
+
+last = os.stat("index.md").st_mtime
+
+while True:
+    new = os.stat("index.md").st_mtime
+    if new != last:
+        src = open("index.md", "r")
+        print("WRITING")
+        open("index.html", "w+").write(s + src.read() + t)
+        last = new
+    time.sleep(1)
